@@ -1,14 +1,36 @@
-// src/app.ts
-import express, { Application } from "express";
-import AuthRoute from './routes/AuthRoute';
+import express from 'express';
 
-const app: Application = express();
+import authRoutes from './routes/AuthRoute';
+import userRoutes from './routes/userRoutes';
+import classRoutes from './routes/classRoutes';
 
+const app = express();
+
+// ⚠️ MIDDLEWARES GLOBAUX - AVANT LES ROUTES
 app.use(express.json());
-app.use('/auth', AuthRoute); 
+app.use(express.urlencoded({ extended: true }));
 
-app.get("/", (req, res) => {
-  res.send("✅ App fonctionne (depuis app.ts)");
+app.get('/whoami', (req, res) => {
+  res.json({ app: 'main app' });
 });
+
+
+// ✅ ROUTES
+console.log('📦 Chargement des routes...');
+app.use('/auth', authRoutes);
+console.log('✅ Routes /auth chargées');
+
+app.use('/api/users', userRoutes);
+
+
+app.use('/api/classes', classRoutes);
+// console.log('✅ Routes /classes chargées');
+
+
+// 404 - DOIT ÊTRE APRÈS TOUTES LES ROUTES
+
+
+const PORT = process.env.PORT || 3000;
+
 
 export default app;
