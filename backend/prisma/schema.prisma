@@ -1,27 +1,79 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
 
 generator client {
   provider = "prisma-client-js"
 }
 
-datasource db {
-  provider = "postgresql"
-   url      = env("DATABASE_URL")
-
+model User {
+  id           Int      @id @default(autoincrement())
+  firstname    String
+  lastname     String
+  email        String   @unique
+  password     String
+  role         Role     @default(STUDENT)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  managedClass Class?
 }
 
-// Exemple de modèles pour tester
-model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String?
-  password  String
-  role      String   @default("student")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Class {
+  id        Int       @id @default(autoincrement())
+  name      String
+  managerId Int       @unique
+  manager   User      @relation(fields: [managerId], references: [id])
+  sessions  Session[]
+  students  Student[]
+}
 
+model Student {
+  id          Int          @id @default(autoincrement())
+  firstname   String
+  classId     Int
+  attendances Attendance[]
+  class       Class        @relation(fields: [classId], references: [id])
+}
+
+model Subject {
+  id       Int       @id @default(autoincrement())
+  name     String
+  sessions Session[]
+}
+
+model Session {
+  id          Int          @id @default(autoincrement())
+  date        DateTime
+  classId     Int
+  subjectId   Int
+  teacherId   Int
+  attendances Attendance[]
+  class       Class        @relation(fields: [classId], references: [id])
+  subject     Subject      @relation(fields: [subjectId], references: [id])
+}
+
+model Attendance {
+  id        Int              @id @default(autoincrement())
+  status    AttendanceStatus @default(PRESENT)
+  studentId Int
+  sessionId Int
+  session   Session          @relation(fields: [sessionId], references: [id])
+  student   Student          @relation(fields: [studentId], references: [id])
+
+  @@unique([studentId, sessionId])
+}
+
+enum Role {
+  ADMIN
+  TEACHER
+  STUDENT
+  PARENT
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LATE
+  EXCUSED
 }

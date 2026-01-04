@@ -1,13 +1,15 @@
 import express from 'express'
 import AuthController from '../controllers/AuthController'
-const router=express.Router();
+import { authenticateToken } from '../middlewares/authMiddleware';
+const router = express.Router();
 
 router.post("/login", AuthController.login);
 router.post("/register", AuthController.register);
+router.get("/me", authenticateToken, AuthController.me);
 
 
 
 
 
 
-export default router ;
+export default router;

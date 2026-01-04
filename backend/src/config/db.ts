@@ -1,4 +1,9 @@
+
+
+
 import { PrismaClient } from '@prisma/client';
+
+
 
 let prismaInstance: PrismaClient | null = null;
 
@@ -22,4 +27,4 @@ export  function getPrismaInstance(): PrismaClient {
 //   await disconnectPrisma();
 // });
 
-export default getPrismaInstance();
+

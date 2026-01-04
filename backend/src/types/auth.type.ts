@@ -1,7 +1,11 @@
+export type Role = 'ADMIN' | 'TEACHER' | 'STUDENT' | 'PARENT';
+
 export interface RegisterBody {
+  firstname: string;
+  lastname: string;
   email: string;
   password: string;
-  name?: string;
+  role?: Role;
 }
 
 export interface LoginBody {
