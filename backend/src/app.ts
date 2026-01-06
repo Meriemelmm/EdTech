@@ -3,6 +3,7 @@ import express from 'express';
 import authRoutes from './routes/AuthRoute';
 import userRoutes from './routes/userRoutes';
 import classRoutes from './routes/classRoutes';
+import studentRoute from './routes/studentRoute'
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use('/api/users', userRoutes);
 
 
 app.use('/api/classes', classRoutes);
+app.use('/api/student', studentRoute);
 // console.log('✅ Routes /classes chargées');
 
 

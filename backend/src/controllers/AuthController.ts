@@ -12,10 +12,19 @@ class AuthController {
     res: Response,
     next: NextFunction
   ): Promise<Response> {
-      console.log("regiter data ",req.body);
+    console.log("register data", req.body);
+    
     try {
       const prisma = getPrismaInstance();
-    
+      
+      // Vérification et destructuration dans le try
+      if (!req.body || Object.keys(req.body).length === 0) {
+        return res.status(400).json({
+          success: false,
+          message: 'Body manquant'
+        });
+      }
+
       const { firstname, lastname, email, password, role } = req.body;
 
       // Validation
@@ -65,6 +74,7 @@ class AuthController {
       });
 
     } catch (error: any) {
+      console.error('Register error:', error);
       return res.status(500).json({
         success: false,
         message: 'Erreur serveur',
@@ -129,6 +139,7 @@ class AuthController {
       });
 
     } catch (error: any) {
+      console.error('Login error:', error);
       return res.status(500).json({
         success: false,
         message: 'Erreur serveur',
@@ -136,6 +147,7 @@ class AuthController {
       });
     }
   }
+
   // ================= ME =================
   async me(req: Request, res: Response): Promise<Response> {
     try {
@@ -171,6 +183,7 @@ class AuthController {
         }
       });
     } catch (error: any) {
+      console.error('Me error:', error);
       return res.status(500).json({
         success: false,
         message: 'Erreur serveur',
